@@ -27,18 +27,26 @@ st.header("Cryptocurrency Performance Analysis")
 
 st.write("""Go deep! Try our expert technical analysis and sentinment analysis tools below!""")
 
-st.option = st.selectbox('Choose a currency to get started.', ('Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
 
+option = st.selectbox('Choose a currency to get started.', ('Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
+
+# Just set some loose max and min data parameters.
 min_date = datetime.datetime(2010,1,1)
 max_date = datetime.datetime(2025,12,12)
 st.date_input("Choose the range of dates to be included in your analysis.", (min_date, max_date))
 
-st.button('Go!')
-# st.progressbar - onSelect of a crpytocurrency we want a progress bar to show progress as the calculations chug away in the bkgd. 
+# Use the OPTION variable and START, and END variables to pull yf.ticker data
+# FOR EXAMPLE:   output = yf.download(option, start=min_date, end=max_date)
+
+if st.button('Execute!'):
+    progress_text = "Operation in progress. Please wait."
+    my_bar = st.progress(0, text=progress_text)
+    # execute line chaet of daily close prices here
+    # execute panda dataframe with pct_change and 7 days of yaht vaulues here.
+
 
 st.write("This progress bar will be converted to a function that runs after the user has chosen a specific crypto and a date range.")
-progress_text = "Operation in progress. Please wait."
-my_bar = st.progress(0, text=progress_text)
+
 
 for percent_complete in range(100):
     time.sleep(0.01)
