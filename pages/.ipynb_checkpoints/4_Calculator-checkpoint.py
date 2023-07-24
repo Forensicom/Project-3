@@ -8,13 +8,14 @@ st.set_page_config(page_title="Calculator")
 
 st.sidebar.image("Resources/super_crypto.png", use_column_width =True)
 
-st.markdown("""## Crypto Calculator""")
+st.markdown("""## Conversion Calculator""")
 
-st.number_input("Amount")
+
 st.selectbox('Convert', ('USD','Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
 
 st.selectbox('To', ('USD', 'Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
-
+st.write("")
+st.number_input("Amount to convert")
 # converter = yf()
 
 
