@@ -41,16 +41,16 @@ st.date_input("Choose the range of dates to be included in your analysis.", (min
 if st.button('Execute!'):
     progress_text = "Operation in progress. Please wait."
     my_bar = st.progress(0, text=progress_text)
-    # execute line chaet of daily close prices here
-    # execute panda dataframe with pct_change and 7 days of yaht vaulues here.
+    st.write("This progress bar will be converted to a function that runs after the user has chosen a specific crypto and a date range.")
+    for percent_complete in range(100):
+        time.sleep(0.01)
+        my_bar.progress(percent_complete + 1, text=progress_text)
+
+    # execute line chart of daily close prices here
+    # execute panda dataframe with pct_change and 7 days of yhat values here.
 
 
-st.write("This progress bar will be converted to a function that runs after the user has chosen a specific crypto and a date range.")
 
-
-for percent_complete in range(100):
-    time.sleep(0.01)
-    my_bar.progress(percent_complete + 1, text=progress_text)
 
 st.write("""Here is where we will put a line chart that shows daily close prices of the input date range for the selected crypto.""")
 st.write("""""")
