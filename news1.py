@@ -18,7 +18,3 @@ for entry in feed.entries:
     data["link"].append(entry.link)
 
 data
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
