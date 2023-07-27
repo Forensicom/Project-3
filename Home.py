@@ -1,5 +1,7 @@
 import streamlit as st
 import yfinance as yf
+import feedparser
+import webbrowser
 
 st.set_page_config(page_title="Group 4")
 
@@ -55,3 +57,12 @@ col1.markdown("""### Insert Pandas Dataframe with one row for each crpyto (conta
 with col3:
     col3.markdown("<h4 style= 'text-align: right'>NEWS</h4>", unsafe_allow_html=True)
     col3.write("This is where we will put the RSS feed")
+
+    feed = feedparser.parse("https://feeds.bloomberg.com/markets/news.rss")
+    feed_title = feed['feed']['title']
+    feed_entried = feed.entries
+    for entry in feed.entries:
+        article_title = entry.title
+        article_link = entry.link
+
+    print ("{}[{}]".format(article_title, article_link))
