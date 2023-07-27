@@ -17,6 +17,12 @@ import time
 import numpy as np
 import datetime
 
+bitcoin = yf.Ticker("BTC-USD")
+ethereum = yf.Ticker("ETH-USD")
+tether = yf.Ticker("USDT-USD")
+ripple = yf.Ticker("XRP-USD")
+binance = yf.Ticker("BNB-USD")
+
 st.set_page_config(page_title="Analyze", page_icon="📈")
 
 st.sidebar.image("Resources/super_crypto.png", use_column_width =True)
@@ -35,12 +41,26 @@ min_date = datetime.datetime(2010,1,1)
 max_date = datetime.datetime(2025,12,12)
 st.date_input("Choose the range of dates to be included in your analysis.", (min_date, max_date))
 
+if option =="Bitcoin":
+        bitcoin = yf.Ticker("BTC-USD", start=min_date, end=max_date) 
+elif option =="etheruem":
+        ethereum = yf.Ticker("ETH-USD", start=min_date, end=max_date)
+elif option == thether:
+        tether = yf.Ticker("USDT-USD", start=min_date, end=max_date)
+elif option =="ripple":
+        ripple = yf.Ticker("XRP-USD", start=min_date, end=max_date)
+elif option =='binance":
+        binance = yf.Ticker("BNB-USD", start=min_date, end=max_date)
+else:
+    print("oops")
+    
 # Use the OPTION variable and START, and END variables to pull yf.ticker data
 # FOR EXAMPLE:   output = yf.download(option, start=min_date, end=max_date)
 
 if st.button('Execute!'):
     progress_text = "Operation in progress. Please wait."
     my_bar = st.progress(0, text=progress_text)
+    # api dta pull goes here
     st.write("This progress bar will be converted to a function that runs after the user has chosen a specific crypto and a date range.")
     for percent_complete in range(100):
         time.sleep(0.01)

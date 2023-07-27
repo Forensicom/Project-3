@@ -5,8 +5,6 @@ import os
 import json
 from decimal import Decimal
 
-api_key = os.getenv("COINCAP_API_KEY")
-
 st.set_page_config(page_title="Transact")
 
 st.sidebar.image("Resources/super_crypto.png", use_column_width =True)
@@ -19,7 +17,7 @@ usdt_url = "https://api.coincap.io/v2/assets/tether"
 xrp_url = "https://api.coincap.io/v2/assets/xrp"
 bnb_url = "https://api.coincap.io/v2/assets/binance-usd"
 
-# create a two column page. Firs tcolumn will be BUY. Second column will be SELL.
+# create a two column page. First column will be BUY. Second column will be SELL.
 col1, col2 = st.columns(2)
 
 picks = ['Buy','Sell']
