@@ -17,6 +17,8 @@
 import streamlit as st
 import yfinance as yf
 
+cash_balance = mycash # cash variable is used here and on the analyze page. Need to write a get_balance() function.
+
 st.set_page_config(page_title="Portfolio")
 st.sidebar.image("Resources/super_crypto.png", use_column_width =True)
 
