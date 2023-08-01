@@ -72,19 +72,11 @@ with col2:
     for entry in feed.entries:
         #data.setdefault("Crypto",[])
         #data.setdefault("link",[])
-        data.setdefault("Crypto News",[])
+        data.setdefault("What is happening today in crypto   ",[])
         #data["Crypto"].append(entry.title)
         #data["link"].append(entry.link)
-        data["Crypto News"].append(f'<a href = "{entry.link}">{entry.title}</a>')
+        data["What is happening today in crypto   "].append(f'<a href = "{entry.link}">{entry.title}</a>')
 
     st.write(pd.DataFrame(data).to_html(escape=False, index=False), unsafe_allow_html = True)
-    '''
-    st.dataframe(data,750
-                 , column_config = {
-                     "link": st.column_config.LinkColumn (
-                         "news feed", max_chars= 999 )
-                         }
-                         ) 
-                    '''  
 
          
