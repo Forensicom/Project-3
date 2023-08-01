@@ -2,6 +2,10 @@ import streamlit as st
 import yfinance as yf
 import feedparser
 import webbrowser
+import pandas as pd
+import openpyxl
+import numpy as np
+from IPython.core.display import display, HTML
 
 st.set_page_config(page_title="Group 4")
 
@@ -63,12 +67,24 @@ with col2:
     for entry in feed.entries:
        article_title = entry.title
        article_link = entry.link
-
+    #df = pd.DataFrame(feed_entries, columns=["Crypto", "link"])
     data = {}
     for entry in feed.entries:
-     data.setdefault("Crypto",[])
-     data.setdefault("link",[])
-     data["Crypto"].append(entry.title)
-     data["link"].append(entry.link)
-    st.dataframe(data,750)
-    
+        #data.setdefault("Crypto",[])
+        #data.setdefault("link",[])
+        data.setdefault("Crypto News",[])
+        #data["Crypto"].append(entry.title)
+        #data["link"].append(entry.link)
+        data["Crypto News"].append(f'<a href = "{entry.link}">{entry.title}</a>')
+
+    st.write(pd.DataFrame(data).to_html(escape=False, index=False), unsafe_allow_html = True)
+    '''
+    st.dataframe(data,750
+                 , column_config = {
+                     "link": st.column_config.LinkColumn (
+                         "news feed", max_chars= 999 )
+                         }
+                         ) 
+                    '''  
+
+         
