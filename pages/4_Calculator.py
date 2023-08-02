@@ -54,3 +54,20 @@ else:
 
 calculated = ((amt*from_price)/ to_price)
 st.write(calculated)
+
+'''
+with col1:
+    source_dict={'btc': btc_url, 
+    'eth': eth_url, 
+    'usdt': usdt_url, 
+    'xrp': xrp_url, 
+    'bnb': bnb_url}
+
+    data_dict={}
+
+    for coin in source_dict: 
+        data=requests.get(source_dict[coin]).json()
+        data_dict[coin]=float(data['data']['changePercent24Hr'])
+
+    st.write(data_dict)
+'''
