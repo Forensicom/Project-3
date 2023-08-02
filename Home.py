@@ -4,7 +4,7 @@ import feedparser
 import webbrowser
 import pandas as pd
 
-st.set_page_config(page_title="Super Crypto")
+st.set_page_config(page_title="Home")
 
 bitcoin = yf.Ticker("BTC-USD")
 ethereum = yf.Ticker("ETH-USD")
@@ -33,6 +33,7 @@ st.markdown(
 
 st.sidebar.image("Resources/super_crypto.png", use_column_width =True)
 
+
 with col1:
     crypto_logos = st.image(["https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=025", 
                             "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=025", 
@@ -53,8 +54,9 @@ they will see a predictive analysis of each crypto and we have also added a sent
 Users can get a feel for the mood of the pubilc around th ecrpyto of their choice. 
 We do this by analyzing Tweets and producing a categorized output..
 """)
-
-# NEED HELP HERE WITH STR VS FLOAT
+# **************************************************************************************************
+# NEED HELP HERE WITH STR VS FLOAT ERROR
+# **************************************************************************************************
 leader = 0
 
 with col1:
@@ -76,7 +78,11 @@ with col1:
     else:
         st.write('Bad day for crypto yesterday. Every coin lost.')
 
-
+# *****************************************************************************************************
+# This is the current position of every coin we track
+# Code works
+# Need to change order of columns
+# *****************************************************************************************************
     bitcoin_day = bitcoin.history(period="1d")
     bitcoin_day_df = pd.DataFrame(bitcoin_day)
     bitcoin_day_df = bitcoin_day_df.drop(columns=["Dividends", "Stock Splits"])
@@ -115,6 +121,10 @@ with col1:
     all_coins_df = pd.DataFrame()
     all_coins_df= pd.concat([bitcoin_day_df,  ethereum_day_df, tether_day_df, ripple_day_df, binance_day_df],axis="rows", join="outer")
     st.write(all_coins_df)
+
+# ***********************************************************************************
+# Column 3 is reserved for the RSS Feed content
+# ***********************************************************************************
 
 with col3:
     st.markdown('NEWS')

@@ -1,4 +1,6 @@
-# This file will hold all function to be used for analyzing a crypto currency
+# **************************************************************************************
+# Detailed analysis and predictions using whatever coin and dat range the user selects
+# **************************************************************************************
 
 import streamlit as st
 import datetime
@@ -26,6 +28,10 @@ st.header("Cryptocurrency Performance Analysis")
 
 st.write("""Go deep! Try our expert technical analysis and sentinment analysis tools below!""")
 
+# *****************************************************************************************
+# User inputs drives analysis. User picks coin and date range.
+# This code could be improved using st.cache
+# *****************************************************************************************
 
 option = st.selectbox('Choose a currency to get started.', ('Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
 
@@ -64,7 +70,9 @@ st.dataframe(query_result)
 chart_data = query_result['Close']
 st.line_chart(chart_data, use_container_width=True)
 
-# NEW NEW NEW
+# *************************************************************************
+# Predictions using Prophet
+# *************************************************************************
 
 days = int(st.selectbox('Choose how many days to predict', [7, 14, 30, 60,90,180])) 
 days_ago=int(st.selectbox('Choose how many days of data you want to look back', [7, 14, 30, 60,90,180,360,720])) 
@@ -76,7 +84,6 @@ if st.button('Predict!'):
         crypto_data.reset_index(inplace=True)
 
         crypto_data=crypto_data.tail(days_ago)
-
 
         crypto_data['Date'] = pd.to_datetime(crypto_data['Date'])
         crypto_data['Date'] =crypto_data['Date'].dt.tz_localize(None)
@@ -113,4 +120,7 @@ if st.button('Predict!'):
         ax.legend()
         st.pyplot(fig)
 
+# **************************************************************************************************************
+# Crypto values are driven in part by sentiment. Therefore, we have included our approach to sentinment analysis below.
+# **************************************************************************************************************
 st.write("""Here is where we will put the output from our tweepy sentinment analysis.""")
