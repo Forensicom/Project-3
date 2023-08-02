@@ -2,6 +2,7 @@ import streamlit as st
 import yfinance as yf
 import feedparser
 import webbrowser
+import pandas as pd
 
 st.set_page_config(page_title="Super Crypto")
 
@@ -16,6 +17,7 @@ eth_url = "https://api.coincap.io/v2/assets/ethereum"
 usdt_url = "https://api.coincap.io/v2/assets/tether"
 xrp_url = "https://api.coincap.io/v2/assets/xrp"
 bnb_url = "https://api.coincap.io/v2/assets/binance-usd"
+
 col1, col2, col3 = st.columns([7,2,2])
 
 st.markdown(
@@ -49,10 +51,10 @@ They are Bitcoin, Ethereum, Tether, Binance and Ripple.
 Not only can users perform the basic technical analysis of a crypto currency, 
 they will see a predictive analysis of each crypto and we have also added a sentimment analysis capability to the platform. 
 Users can get a feel for the mood of the pubilc around th ecrpyto of their choice. 
-We do this by analyzing Tweets and producing a caetogirze doutput..
+We do this by analyzing Tweets and producing a categorized output..
 """)
 
-
+# NEED HELP HERE WITH STR VS FLOAT
 leader = 0
 
 with col1:
@@ -78,6 +80,17 @@ with col1:
 col1.markdown("""### Insert Pandas Dataframe with one row for each crpyto (contains open.close.high,low.volume.pct_change """)
 
 
+bitcoin_day = bitcoin.history(period="1d")
+ethereum_day = ethereum.history(period="1d")
+tether_day = tether.history(period="1d")
+ripple_day = ripple.history(period="1d")
+binance_day = binance.history(period="1d")
+
+list =[bitcoin_day, ethereum_day, tether_day, ripple_day_binance_day]
+pd.concat(list)
+list_df = list.drop(columns=["Dividends", "Stock Splits"])
+list_df['% Change'] = list_df["Close"].pct_change() 
+st.dataframe(list_df)
 
 with col3:
     st.markdown('NEWS')

@@ -2,6 +2,7 @@ import streamlit as st
 import yfinance as yf
 import feedparser
 import webbrowser
+import pandas as pd
 
 st.set_page_config(page_title="Super Crypto")
 
@@ -16,6 +17,7 @@ eth_url = "https://api.coincap.io/v2/assets/ethereum"
 usdt_url = "https://api.coincap.io/v2/assets/tether"
 xrp_url = "https://api.coincap.io/v2/assets/xrp"
 bnb_url = "https://api.coincap.io/v2/assets/binance-usd"
+
 col1, col2, col3 = st.columns([7,2,2])
 
 st.markdown(
@@ -49,10 +51,10 @@ They are Bitcoin, Ethereum, Tether, Binance and Ripple.
 Not only can users perform the basic technical analysis of a crypto currency, 
 they will see a predictive analysis of each crypto and we have also added a sentimment analysis capability to the platform. 
 Users can get a feel for the mood of the pubilc around th ecrpyto of their choice. 
-We do this by analyzing Tweets and producing a caetogirze doutput..
+We do this by analyzing Tweets and producing a categorized output..
 """)
 
-
+# NEED HELP HERE WITH STR VS FLOAT
 leader = 0
 
 with col1:
@@ -74,10 +76,45 @@ with col1:
     else:
         st.write('Bad day for crypto yesterday. Every coin lost.')
 
-    
-col1.markdown("""### Insert Pandas Dataframe with one row for each crpyto (contains open.close.high,low.volume.pct_change """)
 
+    bitcoin_day = bitcoin.history(period="1d")
+    bitcoin_day_df = pd.DataFrame(bitcoin_day)
+    bitcoin_day_df = bitcoin_day_df.drop(columns=["Dividends", "Stock Splits"])
+    bitcoin_chg = bitcoin.history(period="2d")
+    bitcoin_day_df['% Change'] = bitcoin_chg["Close"].pct_change() 
+    bitcoin_day_df['Coin'] = "Bitcoin"
 
+    ethereum_day = ethereum.history(period="1d")
+    ethereum_day_df = pd.DataFrame(ethereum_day)
+    ethereum_day_df = ethereum_day_df.drop(columns=["Dividends", "Stock Splits"])
+    ethereum_chg = ethereum.history(period="2d")
+    ethereum_day_df['% Change'] = ethereum_chg["Close"].pct_change() 
+    ethereum_day_df['Coin'] = "Ethereum"
+
+    tether_day = tether.history(period="1d")
+    tether_day_df = pd.DataFrame(tether_day)
+    tether_day_df = tether_day_df.drop(columns=["Dividends", "Stock Splits"])
+    tether_chg = tether.history(period="2d")
+    tether_day_df['% Change'] = tether_chg["Close"].pct_change() 
+    tether_day_df['Coin'] = "Tether"
+
+    ripple_day = ripple.history(period="1d")
+    ripple_day_df = pd.DataFrame(ripple_day)
+    ripple_day_df = ripple_day_df.drop(columns=["Dividends", "Stock Splits"])
+    ripple_chg = ripple.history(period="2d")
+    ripple_day_df['% Change'] = ripple_chg["Close"].pct_change() 
+    ripple_day_df['Coin'] = "Ripple"
+
+    binance_day = binance.history(period="1d")
+    binance_day_df = pd.DataFrame(binance_day)
+    binance_day_df = binance_day_df.drop(columns=["Dividends", "Stock Splits"])
+    binance_chg = binance.history(period="2d")
+    binance_day_df['% Change'] = binance_chg["Close"].pct_change() 
+    binance_day_df['Coin'] = "Binance"
+
+    all_coins_df = pd.DataFrame()
+    all_coins_df= pd.concat([bitcoin_day_df,  ethereum_day_df, tether_day_df, ripple_day_df, binance_day_df],axis="rows", join="outer")
+    st.write(all_coins_df)
 
 with col3:
     st.markdown('NEWS')

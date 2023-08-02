@@ -1,11 +1,14 @@
 # This file will hold all function to be used for analyzing a crypto currency
 
 import streamlit as st
-import time
-import numpy as np
 import datetime
 import yfinance as yf
 import pandas as pd
+import time
+import numpy as np
+import datetime
+from prophet import Prophet
+import matplotlib.pyplot as plt
 
 bitcoin = yf.Ticker("BTC-USD")
 ethereum = yf.Ticker("ETH-USD")
@@ -61,7 +64,53 @@ st.dataframe(query_result)
 chart_data = query_result['Close']
 st.line_chart(chart_data, use_container_width=True)
 
+# NEW NEW NEW
 
-st.write("""Here is where we will put a chart that shows the predicted yhat values""")
+days = int(st.selectbox('Choose how many days to predict', [7, 14, 30, 60,90,180])) 
+days_ago=int(st.selectbox('Choose how many days of data you want to look back', [7, 14, 30, 60,90,180,360,720])) 
+#st.write("""Here is where we will put a chart that shows the predicted yhat values""")
+
+if st.button('Predict!'):
+
+        crypto_data = query_result[['Open']]
+        crypto_data.reset_index(inplace=True)
+
+        crypto_data=crypto_data.tail(days_ago)
+
+
+        crypto_data['Date'] = pd.to_datetime(crypto_data['Date'])
+        crypto_data['Date'] =crypto_data['Date'].dt.tz_localize(None)
+        # Step 2: Prepare the data for Prophet
+        # Prophet requires the columns to be named 'ds' for timestamps and 'y' for the target variable (price)
+        crypto_data_prophet = crypto_data.rename(columns={'Date': 'ds', 'Open': 'y'})
+
+        # Step 3: Create a Prophet model and fit it to the data
+        model = Prophet()
+        model.fit(crypto_data_prophet)
+
+        # Step 4: Create a dataframe with future timestamps for prediction
+        future = model.make_future_dataframe(periods=days)  # Predict for the next 180 days
+
+        # Step 5: Make predictions using the Prophet model
+        forecast = model.predict(future)
+
+        # Visualize the results
+        st.title('Cryptocurrency Price Prediction with Prophet')
+
+        # Display historical prices
+        st.subheader('Historical Prices')
+        st.line_chart(crypto_data_prophet.set_index('ds'))
+
+        # Display predicted prices
+        st.subheader('Predicted Prices')
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(crypto_data_prophet['ds'], crypto_data_prophet['y'], label='Historical Prices', color='blue')
+        ax.plot(forecast['ds'], forecast['yhat'], label='Predicted Prices', color='red')
+        ax.fill_between(forecast['ds'], forecast['yhat_lower'], forecast['yhat_upper'], alpha=0.3, color='orange')
+        ax.set_xlabel('Timestamp')
+        ax.set_ylabel('Price')
+        ax.set_title('Cryptocurrency Price Forecast')
+        ax.legend()
+        st.pyplot(fig)
 
 st.write("""Here is where we will put the output from our tweepy sentinment analysis.""")
