@@ -1,9 +1,9 @@
 import streamlit as st
 import yfinance as yf
+import feedparser
+import webbrowser
 
-st.set_page_config(page_title="Group 4")
-
-
+st.set_page_config(page_title="Super Crypto")
 
 bitcoin = yf.Ticker("BTC-USD")
 ethereum = yf.Ticker("ETH-USD")
@@ -11,6 +11,11 @@ tether = yf.Ticker("USDT-USD")
 ripple = yf.Ticker("XRP-USD")
 binance = yf.Ticker("BNB-USD")
 
+btc_url = "https://api.coincap.io/v2/assets/bitcoin"
+eth_url = "https://api.coincap.io/v2/assets/ethereum"
+usdt_url = "https://api.coincap.io/v2/assets/tether"
+xrp_url = "https://api.coincap.io/v2/assets/xrp"
+bnb_url = "https://api.coincap.io/v2/assets/binance-usd"
 col1, col2, col3 = st.columns([7,2,2])
 
 st.markdown(
@@ -47,11 +52,32 @@ Users can get a feel for the mood of the pubilc around th ecrpyto of their choic
 We do this by analyzing Tweets and producing a caetogirze doutput..
 """)
 
-col1.markdown("""### Insert Line Graph showing yesterdays top performing cryptocurrency goes here (plot price for every minute yesterday.""")
-col1.button("Re-run")
 
+leader = 0
+
+with col1:
+    if btc_url['data']['changePercent24Hr'] > 0:
+        leader == btc_url['data']['changePercent24Hr']
+        st.write('Yesterdays highest performer was Bitcoin with an',leader,'% change.')
+    elif eth_url['data']['changePercent24Hr'] > leader:
+        leader == eth_url['data']['changePercent24Hr']
+        st.write('Yesterdays highest performer was Ethereum with an',leader,'% change.')
+    elif usdt_url['data']['changePercent24Hr'] > leader:
+        leader == usdt_url['data']['changePercent24Hr']
+        st.write('Yesterdays highest performer was Tether with an',leader,'% change.')
+    elif xrp_url['data']['changePercent24Hr'] > leader:
+        leader == xrp_url['data']['changePercent24Hr']
+        st.write('Yesterdays highest performer was Ripple with an',leader,'% change.')
+    elif bnb_url['data']['changePercent24Hr'] > leader:
+        leader == bnb_url['data']['changePercent24Hr']
+        st.write('Yesterdays highest performer was Binance with an',leader,'% change.')
+    else:
+        st.write('Bad day for crypto yesterday. Every coin lost.')
+
+    
 col1.markdown("""### Insert Pandas Dataframe with one row for each crpyto (contains open.close.high,low.volume.pct_change """)
 
+
+
 with col3:
-    col3.markdown("<h4 style= 'text-align: right'>NEWS</h4>", unsafe_allow_html=True)
-    col3.write("This is where we will put the RSS feed")
+    st.markdown('NEWS')

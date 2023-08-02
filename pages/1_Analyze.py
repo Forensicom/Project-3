@@ -1,21 +1,11 @@
 # This file will hold all function to be used for analyzing a crypto currency
 
-# functions to include:
-
-# FUNCTION "cryptoPlot" - This is a plotting function that will plot daily close prices for a selected crypto in a line graph. This function will need to accept the input variable "selected". Note that The user will be able to make the selection using streamlit.selectbox. 
-
-# 2. FUNCTION: "cryptoFrame" - A pandas dataframe that show daily open, close, high, low, volume and pct_change fo rthe crypto currency specified by the user.
-
-# FUNCTION: "cryptoChg" - A function that calculates pct_change of the daily close price data
-
-
-
-# FUNCTION "nowPrice" returns the current price for the crypto selected.
-
 import streamlit as st
 import time
 import numpy as np
 import datetime
+import yfinance as yf
+import pandas as pd
 
 bitcoin = yf.Ticker("BTC-USD")
 ethereum = yf.Ticker("ETH-USD")
@@ -37,43 +27,41 @@ st.write("""Go deep! Try our expert technical analysis and sentinment analysis t
 option = st.selectbox('Choose a currency to get started.', ('Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
 
 # Just set some loose max and min data parameters.
-min_date = datetime.datetime(2010,1,1)
+min_date = datetime.datetime(2013,1,1)
 max_date = datetime.datetime(2025,12,12)
+
 st.date_input("Choose the range of dates to be included in your analysis.", (min_date, max_date))
 
 if option =="Bitcoin":
-        bitcoin = yf.Ticker("BTC-USD", start=min_date, end=max_date) 
-elif option =="etheruem":
-        ethereum = yf.Ticker("ETH-USD", start=min_date, end=max_date)
-elif option == thether:
-        tether = yf.Ticker("USDT-USD", start=min_date, end=max_date)
-elif option =="ripple":
-        ripple = yf.Ticker("XRP-USD", start=min_date, end=max_date)
-elif option =='binance":
-        binance = yf.Ticker("BNB-USD", start=min_date, end=max_date)
+        query = bitcoin.history(start=min_date, end=max_date) 
+elif option =="Ethereum":
+        query = ethereum.history(start=min_date, end=max_date) 
+elif option == "Tether":
+        query = tether.history(start=min_date, end=max_date)
+elif option =="Ripple":
+        query = ripple.history(start=min_date, end=max_date) 
+elif option =="Binance":
+        query = binance.history(start=min_date, end=max_date)
 else:
     print("oops")
-    
-# Use the OPTION variable and START, and END variables to pull yf.ticker data
-# FOR EXAMPLE:   output = yf.download(option, start=min_date, end=max_date)
 
 if st.button('Execute!'):
     progress_text = "Operation in progress. Please wait."
     my_bar = st.progress(0, text=progress_text)
     # api dta pull goes here
-    st.write("This progress bar will be converted to a function that runs after the user has chosen a specific crypto and a date range.")
     for percent_complete in range(100):
         time.sleep(0.01)
         my_bar.progress(percent_complete + 1, text=progress_text)
 
-    # execute line chart of daily close prices here
-    # execute panda dataframe with pct_change and 7 days of yhat values here.
+query_result = pd.DataFrame(query)
+query_result = query_result.drop(columns=["Dividends", "Stock Splits"])
+query_result['% Change'] = query_result["Close"].pct_change() 
+st.dataframe(query_result)
+
+chart_data = query_result['Close']
+st.line_chart(chart_data, use_container_width=True)
 
 
-
-
-st.write("""Here is where we will put a line chart that shows daily close prices of the input date range for the selected crypto.""")
-st.write("""""")
-st.write("""Here is where we will put a dataframe for the selected crypto that includes only those rows from the selected date range. The dataframe will include open, close, high, low, volume, pct_change, and a prediction (yhat)""")
+st.write("""Here is where we will put a chart that shows the predicted yhat values""")
 
 st.write("""Here is where we will put the output from our tweepy sentinment analysis.""")
