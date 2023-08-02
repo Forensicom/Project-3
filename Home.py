@@ -72,7 +72,7 @@ with col1:
         data=requests.get(source_dict[coin]).json()
         data_dict[coin]=float(data['data']['changePercent24Hr'])
 
-    st.write(data_dict)
+# st.write(data_dict)
     st.markdown('Todays Highlights', unsafe_allow_html=False)
     st.write("The biggest change over the last 24 hours was seen in ",max(data_dict), " with a change of %")
     st.write("The smallest change over the last 24 hours was seen in ",min(data_dict), " with a change of %")
