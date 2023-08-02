@@ -10,23 +10,47 @@ st.sidebar.image("Resources/super_crypto.png", use_column_width =True)
 
 st.markdown("""## Conversion Calculator""")
 
+amt = st.number_input("Amount to convert")
+from_opt = st.selectbox('Convert', ('USD','Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
+to_opt = st.selectbox('To', ('USD', 'Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
+from_price = 0
+to_price = 0
 
-st.selectbox('Convert', ('USD','Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
+btc_url = "https://api.coincap.io/v2/assets/bitcoin"
+eth_url = "https://api.coincap.io/v2/assets/ethereum"
+usdt_url = "https://api.coincap.io/v2/assets/tether"
+xrp_url = "https://api.coincap.io/v2/assets/xrp"
+bnb_url = "https://api.coincap.io/v2/assets/binance-usd"
 
-st.selectbox('To', ('USD', 'Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
-st.write("")
-st.number_input("Amount to convert")
-# converter = yf()
+if from_opt =="Bitcoin":
+        from_price = btc_url['data']['priceUsd']
+elif from_opt =="USD":
+        from_price = 1
+elif from_opt =="Ethereum":
+        from_price = eth_url['data']['priceUsd']
+elif from_opt == "Tether":
+        from_price = udt_url['data']['priceUsd']
+elif from_opt =="Ripple":
+        from_price = xrp_url['data']['priceUsd']
+elif from_opt =="Binance":
+        from_price = bnb_url['data']['priceUsd']
+else:
+    print("oops")
 
+if to_opt =="Bitcoin":
+        to_price = btc_url['data']['priceUsd']
+elif to_opt == "USD":
+        to_price = 1
+elif to_opt =="Ethereum":
+        to_price = eth_url['data']['priceUsd']
+elif to_opt == "Tether":
+        to_price = udt_url['data']['priceUsd']
+elif to_opt =="Ripple":
+        to_price = xrp_url['data']['priceUsd']
+elif to_opt =="Binance":
+        to_price = bnb_url['data']['priceUsd']
+else:
+    print("oops")
 
-# from_currency = 
-# to_currency =
-
-def convert_currency(amount, from_currency, to_currency):
-    try:
-        rate = converter.get_rate(from_currency, to_currency)
-        converted_amount = round(amount * rate, 2)
-        return converted_amount
-    except :
-        st.write(f"<h3>Error: Cannot find the rate.</h3>",unsafe_allow_html=True)
-        return None
+calculated = ((amt*from_price)/ to_price)
+st.write(calculated)

@@ -59,21 +59,27 @@ We do this by analyzing Tweets and producing a categorized output..
 # **************************************************************************************************
 leader = 0
 
+btc_pct = btc_url(['data']['changePercent24Hr'])
+eth_pct = eth_url(['data']['changePercent24Hr'])
+usdt_pct = usdt_url(['data']['changePercent24Hr'])
+xrp_pct = xrp_url(['data']['changePercent24Hr'])
+bnb_pct = bnb_url(['data']['changePercent24Hr'])
+
 with col1:
-    if btc_url['data']['changePercent24Hr'] > 0:
-        leader == btc_url['data']['changePercent24Hr']
+    if btc_pct > 0:
+        leader == btc_pct
         st.write('Yesterdays highest performer was Bitcoin with an',leader,'% change.')
-    elif eth_url['data']['changePercent24Hr'] > leader:
-        leader == eth_url['data']['changePercent24Hr']
+    elif eth_pct > leader:
+        leader == eth_pct
         st.write('Yesterdays highest performer was Ethereum with an',leader,'% change.')
-    elif usdt_url['data']['changePercent24Hr'] > leader:
-        leader == usdt_url['data']['changePercent24Hr']
+    elif usdt_pct > leader:
+        leader == usdt_pct
         st.write('Yesterdays highest performer was Tether with an',leader,'% change.')
-    elif xrp_url['data']['changePercent24Hr'] > leader:
-        leader == xrp_url['data']['changePercent24Hr']
+    elif xrp_pct > leader:
+        leader == xrp_pct
         st.write('Yesterdays highest performer was Ripple with an',leader,'% change.')
-    elif bnb_url['data']['changePercent24Hr'] > leader:
-        leader == bnb_url['data']['changePercent24Hr']
+    elif bnb_pct > leader:
+        leader == bnb_pct
         st.write('Yesterdays highest performer was Binance with an',leader,'% change.')
     else:
         st.write('Bad day for crypto yesterday. Every coin lost.')
