@@ -19,7 +19,7 @@ usdt_url = "https://api.coincap.io/v2/assets/tether"
 xrp_url = "https://api.coincap.io/v2/assets/xrp"
 bnb_url = "https://api.coincap.io/v2/assets/binance-usd"
 
-col1, col2, col3 = st.columns([7,2,2])
+col1, col2 = st.columns([9,3])
 
 st.markdown(
     """
@@ -55,49 +55,39 @@ they will see a predictive analysis of each crypto and we have also added a sent
 Users can get a feel for the mood of the pubilc around th ecrpyto of their choice. 
 We do this by analyzing Tweets and producing a categorized output..
 """)
-# **************************************************************************************************
-# NEED HELP HERE WITH STR VS FLOAT ERROR
-# **************************************************************************************************
-leader = 0
-
-source_dict={'btc': btc_url, 
-'eth': eth_url, 
-'usdt': usdt_url, 
-'xrp': xrp_url, 
-'bnb': bnb_url}
-
-data_dict={}
-
-for coin in source_dict: 
-    data=requests.get(source_dict[coin]).json()
-    data_dict[coin]=float(data['data']['changePercent24Hr'])
-
-st.write(data_dict)
-# btc_data=
-# btc_pct = btc_data['data']['changePercent24Hr']
-# eth_pct = eth_url(['data']['changePercent24Hr'])
-# usdt_pct = usdt_url(['data']['changePercent24Hr'])
-# xrp_pct = xrp_url(['data']['changePercent24Hr'])
-# bnb_pct = bnb_url(['data']['changePercent24Hr'])
 
 with col1:
-    if btc_pct > 0:
-        leader == btc_pct
-        st.write('Yesterdays highest performer was Bitcoin with an',leader,'% change.')
-    elif eth_pct > leader:
-        leader == eth_pct
-        st.write('Yesterdays highest performer was Ethereum with an',leader,'% change.')
-    elif usdt_pct > leader:
-        leader == usdt_pct
-        st.write('Yesterdays highest performer was Tether with an',leader,'% change.')
-    elif xrp_pct > leader:
-        leader == xrp_pct
-        st.write('Yesterdays highest performer was Ripple with an',leader,'% change.')
-    elif bnb_pct > leader:
-        leader == bnb_pct
-        st.write('Yesterdays highest performer was Binance with an',leader,'% change.')
+    source_dict={'btc': btc_url, 
+    'eth': eth_url, 
+    'usdt': usdt_url, 
+    'xrp': xrp_url, 
+    'bnb': bnb_url}
+
+    data_dict={}
+
+    for coin in source_dict: 
+        data=requests.get(source_dict[coin]).json()
+        data_dict[coin]=float(data['data']['changePercent24Hr'])
+
+    max_key = max(data_dict, key=data_dict.get)
+    min_key = min(data_dict, key=data_dict.get)
+    max_value = max(data_dict.values())
+    min_value = min(data_dict.values())
+
+    st.markdown('**:blue[Todays Higlights]**', unsafe_allow_html=False)
+    if max_value > 0:
+        st.write(max_key, "experienced the best positive change at ",max_value," %")
+    elif max_value < 0:
+        st.write(max_key, "experienced a least negative change of",max_value,"%")
     else:
-        st.write('Bad day for crypto yesterday. Every coin lost.')
+        st.write("No changes to report")
+
+    if min_value > 0:
+        st.write("The smallest increase on the day was ",min_key, " with a change of",min_value,"%")
+    elif min_value < 0:
+        st.write("The biggest negative change on the day goes to ",min_key," with a change of ", min_value,"%")
+    else:
+        st.write("No changes to report")
 
 # *****************************************************************************************************
 # This is the current position of every coin we track
@@ -141,11 +131,30 @@ with col1:
 
     all_coins_df = pd.DataFrame()
     all_coins_df= pd.concat([bitcoin_day_df,  ethereum_day_df, tether_day_df, ripple_day_df, binance_day_df],axis="rows", join="outer")
-    st.write(all_coins_df)
+    
+    st.write(all_coins_df[['Coin', 'Open', 'Close', 'High', 'Low', 'Volume', '% Change']], use_column_width =True)
+
 
 # ***********************************************************************************
-# Column 3 is reserved for the RSS Feed content
+# Column 2 is reserved for the RSS Feed content
 # ***********************************************************************************
 
-with col3:
-    st.markdown('NEWS')
+with col2:
+    col2.markdown("<h4 style= 'text-align: center'>NEWS</h4>", unsafe_allow_html=True)
+    feed = feedparser.parse("https://cointelegraph.com/rss")
+    feed_title = feed['feed']['title']
+    feed_entries = feed.entries
+    for entry in feed.entries:
+       article_title = entry.title
+       article_link = entry.link
+    #df = pd.DataFrame(feed_entries, columns=["Crypto", "link"])
+    data = {}
+    for entry in feed.entries:
+        #data.setdefault("Crypto",[])
+        #data.setdefault("link",[])
+        data.setdefault("What is happening today in crypto   ",[])
+        #data["Crypto"].append(entry.title)
+        #data["link"].append(entry.link)
+        data["What is happening today in crypto   "].append(f'<a href = "{entry.link}">{entry.title}</a>')
+
+    st.write(pd.DataFrame(data).to_html(escape=False, index=False), unsafe_allow_html = True)

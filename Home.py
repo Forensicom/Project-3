@@ -19,7 +19,7 @@ usdt_url = "https://api.coincap.io/v2/assets/tether"
 xrp_url = "https://api.coincap.io/v2/assets/xrp"
 bnb_url = "https://api.coincap.io/v2/assets/binance-usd"
 
-col1, col2, col3 = st.columns([7,2,2])
+col1, col2 = st.columns([9,3])
 
 st.markdown(
     """
@@ -52,13 +52,10 @@ This platform enables users to both analyze and trade the top 5 crpyto currencie
 They are Bitcoin, Ethereum, Tether, Binance and Ripple. 
 Not only can users perform the basic technical analysis of a crypto currency, 
 they will see a predictive analysis of each crypto and we have also added a sentimment analysis capability to the platform. 
-Users can get a feel for the mood of the pubilc around th ecrpyto of their choice. 
-We do this by analyzing Tweets and producing a categorized output..
+Users can get a feel for the mood of the public around the crpyto of their choice. 
+We do this by analyzing Tweets and producing a categorized output.
 """)
-# **************************************************************************************************
-# NEED HELP HERE WITH STR VS FLOAT ERROR
-# **************************************************************************************************
-leader = 0
+
 with col1:
     source_dict={'btc': btc_url, 
     'eth': eth_url, 
@@ -72,12 +69,25 @@ with col1:
         data=requests.get(source_dict[coin]).json()
         data_dict[coin]=float(data['data']['changePercent24Hr'])
 
-# st.write(data_dict)
-    st.markdown('Todays Highlights', unsafe_allow_html=False)
-    st.write("The biggest change over the last 24 hours was seen in ",max(data_dict), " with a change of %")
-    st.write("The smallest change over the last 24 hours was seen in ",min(data_dict), " with a change of %")
+    max_key = max(data_dict, key=data_dict.get)
+    min_key = min(data_dict, key=data_dict.get)
+    max_value = max(data_dict.values())
+    min_value = min(data_dict.values())
 
+    st.markdown('**:blue[Todays Higlights]**', unsafe_allow_html=False)
+    if max_value > 0:
+        st.write(max_key, "experienced the best positive change at ",max_value," %")
+    elif max_value < 0:
+        st.write(max_key, "experienced a least negative change of",max_value,"%")
+    else:
+        st.write("No changes to report")
 
+    if min_value > 0:
+        st.write("The smallest increase on the day was ",min_key, " with a change of",min_value,"%")
+    elif min_value < 0:
+        st.write("The biggest negative change on the day goes to ",min_key," with a change of ", min_value,"%")
+    else:
+        st.write("No changes to report")
 
 # *****************************************************************************************************
 # This is the current position of every coin we track
@@ -121,19 +131,16 @@ with col1:
 
     all_coins_df = pd.DataFrame()
     all_coins_df= pd.concat([bitcoin_day_df,  ethereum_day_df, tether_day_df, ripple_day_df, binance_day_df],axis="rows", join="outer")
-    st.write(all_coins_df)
+    
+    st.write(all_coins_df[['Coin', 'Open', 'Close', 'High', 'Low', 'Volume', '% Change']], use_column_width =True)
 
-# ************************************************
-# Column 2 has been left blank
-# ************************************************
 
 # ***********************************************************************************
-# Column 3 is reserved for the RSS Feed content
+# Column 2 is reserved for the RSS Feed content
 # ***********************************************************************************
 
-with col3:
-    col3.markdown("<h4 style= 'text-align: center'>NEWS</h4>", unsafe_allow_html=True)
-    #col3.write("This is where we will put the RSS feed")
+with col2:
+    col2.markdown("<h4 style= 'text-align: center'>NEWS</h4>", unsafe_allow_html=True)
     feed = feedparser.parse("https://cointelegraph.com/rss")
     feed_title = feed['feed']['title']
     feed_entries = feed.entries
