@@ -36,10 +36,11 @@ st.write("""Go deep! Try our expert technical analysis and sentinment analysis t
 option = st.selectbox('Choose a currency to get started.', ('Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
 
 # Just set some loose max and min data parameters.
-min_date = datetime.datetime(2013,1,1)
-max_date = datetime.datetime(2025,12,12)
+# min_date = datetime.datetime(2023,3,7)
+# max_date = datetime.datetime(2023,3,18)
 
-st.date_input("Choose the range of dates to be included in your analysis.", (min_date, max_date))
+min_date, max_date=st.date_input("Choose the range of dates to be included in your analysis.", (datetime.datetime(2017,1,1), datetime.datetime(2023,3,18)))
+
 
 if option =="Bitcoin":
         query = bitcoin.history(start=min_date, end=max_date) 
@@ -57,7 +58,7 @@ else:
 if st.button('Execute!'):
     progress_text = "Operation in progress. Please wait."
     my_bar = st.progress(0, text=progress_text)
-    # api dta pull goes here
+    # api data pull goes here
     for percent_complete in range(100):
         time.sleep(0.01)
         my_bar.progress(percent_complete + 1, text=progress_text)
@@ -123,4 +124,4 @@ if st.button('Predict!'):
 # **************************************************************************************************************
 # Crypto values are driven in part by sentiment. Therefore, we have included our approach to sentinment analysis below.
 # **************************************************************************************************************
-st.write("""Here is where we will put the output from our tweepy sentinment analysis.""")
+st.write("""Here is where we will put the output from our tweepy sentinment analysis. Understanding market sentiment can help traders make more informed decisions and potentially maximize their profits.""")

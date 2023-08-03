@@ -1,11 +1,16 @@
-# This file will hold all function to be used for analyzing a crypto currency
+# **************************************************************************************
+# Detailed analysis and predictions using whatever coin and dat range the user selects
+# **************************************************************************************
 
 import streamlit as st
-import time
-import numpy as np
 import datetime
 import yfinance as yf
 import pandas as pd
+import time
+import numpy as np
+import datetime
+from prophet import Prophet
+import matplotlib.pyplot as plt
 
 bitcoin = yf.Ticker("BTC-USD")
 ethereum = yf.Ticker("ETH-USD")
@@ -23,14 +28,19 @@ st.header("Cryptocurrency Performance Analysis")
 
 st.write("""Go deep! Try our expert technical analysis and sentinment analysis tools below!""")
 
+# *****************************************************************************************
+# User inputs drives analysis. User picks coin and date range.
+# This code could be improved using st.cache
+# *****************************************************************************************
 
 option = st.selectbox('Choose a currency to get started.', ('Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
 
 # Just set some loose max and min data parameters.
-min_date = datetime.datetime(2013,1,1)
-max_date = datetime.datetime(2025,12,12)
+# min_date = datetime.datetime(2023,3,7)
+# max_date = datetime.datetime(2023,3,18)
 
-st.date_input("Choose the range of dates to be included in your analysis.", (min_date, max_date))
+min_date, max_date=st.date_input("Choose the range of dates to be included in your analysis.", (datetime.datetime(2023,3,7), datetime.datetime(2023,3,18)))
+
 
 if option =="Bitcoin":
         query = bitcoin.history(start=min_date, end=max_date) 
@@ -48,7 +58,7 @@ else:
 if st.button('Execute!'):
     progress_text = "Operation in progress. Please wait."
     my_bar = st.progress(0, text=progress_text)
-    # api dta pull goes here
+    # api data pull goes here
     for percent_complete in range(100):
         time.sleep(0.01)
         my_bar.progress(percent_complete + 1, text=progress_text)
@@ -61,7 +71,9 @@ st.dataframe(query_result)
 chart_data = query_result['Close']
 st.line_chart(chart_data, use_container_width=True)
 
-# NEW NEW NEW
+# *************************************************************************
+# Predictions using Prophet
+# *************************************************************************
 
 days = int(st.selectbox('Choose how many days to predict', [7, 14, 30, 60,90,180])) 
 days_ago=int(st.selectbox('Choose how many days of data you want to look back', [7, 14, 30, 60,90,180,360,720])) 
@@ -73,7 +85,6 @@ if st.button('Predict!'):
         crypto_data.reset_index(inplace=True)
 
         crypto_data=crypto_data.tail(days_ago)
-
 
         crypto_data['Date'] = pd.to_datetime(crypto_data['Date'])
         crypto_data['Date'] =crypto_data['Date'].dt.tz_localize(None)
@@ -110,4 +121,7 @@ if st.button('Predict!'):
         ax.legend()
         st.pyplot(fig)
 
-st.write("""Here is where we will put the output from our tweepy sentinment analysis.""")
+# **************************************************************************************************************
+# Crypto values are driven in part by sentiment. Therefore, we have included our approach to sentinment analysis below.
+# **************************************************************************************************************
+st.write("""Here is where we will put the output from our tweepy sentinment analysis. Understanding market sentiment can help traders make more informed decisions and potentially maximize their profits.""")
