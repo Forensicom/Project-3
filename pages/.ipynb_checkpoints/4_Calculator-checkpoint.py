@@ -5,7 +5,7 @@ import requests
 # The purpose of this page is to help users calulate how much of a crypto they could buy for X dollars.
 # This will require the CURREN tprice of whatever crypto they select. 
 
-st.set_page_config(page_title="Calculator")
+st.set_page_config(page_title="Calculator",page_icon=":heavy_dollar_sign:")
 
 st.sidebar.image("Resources/super_crypto.png", use_column_width =True)
 
@@ -28,7 +28,8 @@ data_dict={}
 for coin in source_dict: 
     data=requests.get(source_dict[coin]).json()
     data_dict[coin]=float(data['data']['priceUsd'])
-
+    
+# ***********************ERRORS*********************************************
 def calculate():
     calculated = ((amt*from_price)/to_price)
     return calculated

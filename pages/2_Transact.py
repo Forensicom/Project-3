@@ -5,7 +5,7 @@ import os
 import json
 from decimal import Decimal
 
-st.set_page_config(page_title="Transact")
+st.set_page_config(page_title="Transact",page_icon=":heavy_dollar_sign:")
 
 st.sidebar.image("Resources/super_crypto.png", use_column_width =True)
 
@@ -19,21 +19,14 @@ bnb_url = "https://api.coincap.io/v2/assets/binance-usd"
 
 options = ['Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance']
 st.markdown('### Buy and Sell Cryptocurrency')
-# with st.form("inputs_form"):
-transaction = st.radio("Please choose a transaction type",('Buy', 'Sell'))
-if transaction == 'Sell':
-    with st.form(sell_form):
-        to_wallet = st.text_input("Enter the destination Wallet ID")
-        wallet = st.text_input("Enter your Wallet ID")
-        choice = st.selectbox('Choose a cryptocurrency to get started.', options)
-        amt = st.number_input("Amount")
-        st.form_submit_button('Execute!')
-else:
-    with st.form(buy_form):
-        wallet = st.text_input("Enter your Wallet ID")
-        choice = st.selectbox('Choose a cryptocurrency to get started.', options)
-        amt = st.number_input("Amount")
-        st.form_submit_button('Execute!')
+with st.form("inputs_form"):
+    transaction = st.radio("Please choose a transaction type",('Buy', 'Sell'))
+    wallet = st.text_input("Enter your Wallet ID")
+    to_walt = st.text_input("Enter the destination Wallet ID")
+    choice = st.selectbox('Choose a cryptocurrency to get started.', options)
+    amt = st.number_input("Amount")
+    st.form_submit_button('Execute!')
+
  
 if choice == "Bitcoin":
     output = requests.get(btc_url).json()
@@ -48,21 +41,6 @@ elif choice == "Binance":
 else: 
     print("Pick something!!")
 
-'''
-    # Once a crpyto is chosen we also need to calculate how muchof that particular crpyto the user owns. We will print it out in a statement after they make the selection.
-
-    # Grabbing the current price in USD
-    now_price = output['data']['priceUsd']
-    now_price = Decimal(now_price)
-    print(now_price)
+st.write("Users that try to buy or sell outside of their limitations will be thrown an error and the transaction will not proceed.")
 
    
-    amt = Decimal(amt)
-
-
-        value = now_price * amt
-        print(value)
-
-st.write('Confirmation of transaction goes down here')
-
-'''

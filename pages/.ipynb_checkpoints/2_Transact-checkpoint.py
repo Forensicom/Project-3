@@ -5,7 +5,7 @@ import os
 import json
 from decimal import Decimal
 
-st.set_page_config(page_title="Transact")
+st.set_page_config(page_title="Transact",page_icon=":heavy_dollar_sign:")
 
 st.sidebar.image("Resources/super_crypto.png", use_column_width =True)
 
@@ -19,17 +19,15 @@ bnb_url = "https://api.coincap.io/v2/assets/binance-usd"
 
 options = ['Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance']
 st.markdown('### Buy and Sell Cryptocurrency')
-# with st.form("inputs_form"):
-transaction = st.radio("Please choose a transaction type",('Buy', 'Sell'))
-if transaction == 'Sell':
-    to_wallet = st.text_input("Enter the destination Wallet ID")
-else:
+with st.form("inputs_form"):
+    transaction = st.radio("Please choose a transaction type",('Buy', 'Sell'))
+    to_walt = st.text_input("Enter the destination Wallet ID")
     wallet = st.text_input("Enter your Wallet ID")
     choice = st.selectbox('Choose a cryptocurrency to get started.', options)
     amt = st.number_input("Amount")
-#    if st.form_submit_button("Execute!"):
-#       st.write("Transaction launched")
-        
+    st.form_submit_button('Execute!')
+
+ 
 if choice == "Bitcoin":
     output = requests.get(btc_url).json()
 elif choice == "Ethereum":

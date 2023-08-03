@@ -5,7 +5,7 @@ import webbrowser
 import pandas as pd
 import requests
 
-st.set_page_config(page_title="Home")
+st.set_page_config(page_title="Home", page_icon=" 	:house:")
 
 bitcoin = yf.Ticker("BTC-USD")
 ethereum = yf.Ticker("ETH-USD")
