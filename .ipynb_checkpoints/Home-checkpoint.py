@@ -52,8 +52,8 @@ This platform enables users to both analyze and trade the top 5 crpyto currencie
 They are Bitcoin, Ethereum, Tether, Binance and Ripple. 
 Not only can users perform the basic technical analysis of a crypto currency, 
 they will see a predictive analysis of each crypto and we have also added a sentimment analysis capability to the platform. 
-Users can get a feel for the mood of the pubilc around th ecrpyto of their choice. 
-We do this by analyzing Tweets and producing a categorized output..
+Users can get a feel for the mood of the public around the crpyto of their choice. 
+We do this by analyzing Tweets and producing a categorized output.
 """)
 
 with col1:
@@ -76,16 +76,16 @@ with col1:
 
     st.markdown('**:blue[Todays Higlights]**', unsafe_allow_html=False)
     if max_value > 0:
-        st.write(max_key, "experienced the best positive change at ",max_value," %")
+        st.write("-", max_key, "experienced the best positive change at ",max_value," %")
     elif max_value < 0:
-        st.write(max_key, "experienced a least negative change of",max_value,"%")
+        st.write("-", max_key, "experienced a least negative change of",max_value,"%")
     else:
         st.write("No changes to report")
 
     if min_value > 0:
-        st.write("The smallest increase on the day was ",min_key, " with a change of",min_value,"%")
+        st.write("- The smallest increase on the day was ",min_key, " with a change of",min_value,"%")
     elif min_value < 0:
-        st.write("The biggest negative change on the day goes to ",min_key," with a change of ", min_value,"%")
+        st.write("- The biggest negative change on the day goes to ",min_key," with a change of ", min_value,"%")
     else:
         st.write("No changes to report")
 

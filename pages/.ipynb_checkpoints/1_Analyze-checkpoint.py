@@ -32,36 +32,36 @@ st.write("""Go deep! Try our expert technical analysis and sentinment analysis t
 # User inputs drives analysis. User picks coin and date range.
 # This code could be improved using st.cache
 # *****************************************************************************************
+with st.form("select_form"):
+    option = st.selectbox('Choose a currency to get started.', ('Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
 
-option = st.selectbox('Choose a currency to get started.', ('Bitcoin', 'Ethereum', 'Tether', 'Ripple', 'Binance'))
+    # Just set some loose max and min data parameters.
+    # min_date = datetime.datetime(2023,3,7)
+    # max_date = datetime.datetime(2023,3,18)
 
-# Just set some loose max and min data parameters.
-# min_date = datetime.datetime(2023,3,7)
-# max_date = datetime.datetime(2023,3,18)
-
-min_date, max_date=st.date_input("Choose the range of dates to be included in your analysis.", (datetime.datetime(2023,3,7), datetime.datetime(2023,3,18)))
+    min_date, max_date=st.date_input("Choose the range of dates to be included in your analysis.", (datetime.datetime(2017,1,1), datetime.datetime(2023,3,18)))
 
 
-if option =="Bitcoin":
-        query = bitcoin.history(start=min_date, end=max_date) 
-elif option =="Ethereum":
-        query = ethereum.history(start=min_date, end=max_date) 
-elif option == "Tether":
-        query = tether.history(start=min_date, end=max_date)
-elif option =="Ripple":
-        query = ripple.history(start=min_date, end=max_date) 
-elif option =="Binance":
-        query = binance.history(start=min_date, end=max_date)
-else:
-    print("oops")
+    if option =="Bitcoin":
+            query = bitcoin.history(start=min_date, end=max_date) 
+    elif option =="Ethereum":
+            query = ethereum.history(start=min_date, end=max_date) 
+    elif option == "Tether":
+            query = tether.history(start=min_date, end=max_date)
+    elif option =="Ripple":
+            query = ripple.history(start=min_date, end=max_date) 
+    elif option =="Binance":
+            query = binance.history(start=min_date, end=max_date)
+    else:
+        print("oops")
 
-if st.button('Execute!'):
-    progress_text = "Operation in progress. Please wait."
-    my_bar = st.progress(0, text=progress_text)
-    # api data pull goes here
-    for percent_complete in range(100):
-        time.sleep(0.01)
-        my_bar.progress(percent_complete + 1, text=progress_text)
+    if st.form_submit_button('Execute!'):
+        progress_text = "Operation in progress. Please wait."
+        my_bar = st.progress(0, text=progress_text)
+        # api data pull goes here
+        for percent_complete in range(100):
+            time.sleep(0.01)
+            my_bar.progress(percent_complete + 1, text=progress_text)
 
 query_result = pd.DataFrame(query)
 query_result = query_result.drop(columns=["Dividends", "Stock Splits"])
@@ -74,54 +74,57 @@ st.line_chart(chart_data, use_container_width=True)
 # *************************************************************************
 # Predictions using Prophet
 # *************************************************************************
+st.markdown('## Predictive Analysis')
+with st.form("predict_form"):
 
-days = int(st.selectbox('Choose how many days to predict', [7, 14, 30, 60,90,180])) 
-days_ago=int(st.selectbox('Choose how many days of data you want to look back', [7, 14, 30, 60,90,180,360,720])) 
-#st.write("""Here is where we will put a chart that shows the predicted yhat values""")
+    days = int(st.selectbox('Choose how many days to predict', [7, 14, 30, 60,90,180])) 
+    days_ago=int(st.selectbox('Choose how many days of data you want to look back', [7, 14, 30, 60,90,180,360,720])) 
+    #st.write("""Here is where we will put a chart that shows the predicted yhat values""")
 
-if st.button('Predict!'):
+    submitted = st.form_submit_button("Predict!")
+    if submitted:
+            crypto_data = query_result[['Open']]
+            crypto_data.reset_index(inplace=True)
 
-        crypto_data = query_result[['Open']]
-        crypto_data.reset_index(inplace=True)
+            crypto_data=crypto_data.tail(days_ago)
 
-        crypto_data=crypto_data.tail(days_ago)
+            crypto_data['Date'] = pd.to_datetime(crypto_data['Date'])
+            crypto_data['Date'] =crypto_data['Date'].dt.tz_localize(None)
+            # Step 2: Prepare the data for Prophet
+            # Prophet requires the columns to be named 'ds' for timestamps and 'y' for the target variable (price)
+            crypto_data_prophet = crypto_data.rename(columns={'Date': 'ds', 'Open': 'y'})
 
-        crypto_data['Date'] = pd.to_datetime(crypto_data['Date'])
-        crypto_data['Date'] =crypto_data['Date'].dt.tz_localize(None)
-        # Step 2: Prepare the data for Prophet
-        # Prophet requires the columns to be named 'ds' for timestamps and 'y' for the target variable (price)
-        crypto_data_prophet = crypto_data.rename(columns={'Date': 'ds', 'Open': 'y'})
+            # Step 3: Create a Prophet model and fit it to the data
+            model = Prophet()
+            model.fit(crypto_data_prophet)
 
-        # Step 3: Create a Prophet model and fit it to the data
-        model = Prophet()
-        model.fit(crypto_data_prophet)
+            # Step 4: Create a dataframe with future timestamps for prediction
+            future = model.make_future_dataframe(periods=days)  # Predict for the next 180 days
 
-        # Step 4: Create a dataframe with future timestamps for prediction
-        future = model.make_future_dataframe(periods=days)  # Predict for the next 180 days
+            # Step 5: Make predictions using the Prophet model
+            forecast = model.predict(future)
 
-        # Step 5: Make predictions using the Prophet model
-        forecast = model.predict(future)
+            # Visualize the results
+            st.title('Cryptocurrency Price Prediction with Prophet')
 
-        # Visualize the results
-        st.title('Cryptocurrency Price Prediction with Prophet')
+            # Display historical prices
+            st.subheader('Historical Prices')
+            st.line_chart(crypto_data_prophet.set_index('ds'))
 
-        # Display historical prices
-        st.subheader('Historical Prices')
-        st.line_chart(crypto_data_prophet.set_index('ds'))
-
-        # Display predicted prices
-        st.subheader('Predicted Prices')
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.plot(crypto_data_prophet['ds'], crypto_data_prophet['y'], label='Historical Prices', color='blue')
-        ax.plot(forecast['ds'], forecast['yhat'], label='Predicted Prices', color='red')
-        ax.fill_between(forecast['ds'], forecast['yhat_lower'], forecast['yhat_upper'], alpha=0.3, color='orange')
-        ax.set_xlabel('Timestamp')
-        ax.set_ylabel('Price')
-        ax.set_title('Cryptocurrency Price Forecast')
-        ax.legend()
-        st.pyplot(fig)
+            # Display predicted prices
+            st.subheader('Predicted Prices')
+            fig, ax = plt.subplots(figsize=(10, 6))
+            ax.plot(crypto_data_prophet['ds'], crypto_data_prophet['y'], label='Historical Prices', color='blue')
+            ax.plot(forecast['ds'], forecast['yhat'], label='Predicted Prices', color='red')
+            ax.fill_between(forecast['ds'], forecast['yhat_lower'], forecast['yhat_upper'], alpha=0.3, color='orange')
+            ax.set_xlabel('Timestamp')
+            ax.set_ylabel('Price')
+            ax.set_title('Cryptocurrency Price Forecast')
+            ax.legend()
+            st.pyplot(fig)
 
 # **************************************************************************************************************
 # Crypto values are driven in part by sentiment. Therefore, we have included our approach to sentinment analysis below.
 # **************************************************************************************************************
+st.markdown('## Sentiment Analysis')
 st.write("""Here is where we will put the output from our tweepy sentinment analysis. Understanding market sentiment can help traders make more informed decisions and potentially maximize their profits.""")

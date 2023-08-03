@@ -76,16 +76,16 @@ with col1:
 
     st.markdown('**:blue[Todays Higlights]**', unsafe_allow_html=False)
     if max_value > 0:
-        st.write(max_key, "experienced the best positive change at ",max_value," %")
+        st.write("-", max_key, "experienced the best positive change at ",max_value," %")
     elif max_value < 0:
-        st.write(max_key, "experienced a least negative change of",max_value,"%")
+        st.write("-", max_key, "experienced a least negative change of",max_value,"%")
     else:
         st.write("No changes to report")
 
     if min_value > 0:
-        st.write("The smallest increase on the day was ",min_key, " with a change of",min_value,"%")
+        st.write("- The smallest increase on the day was ",min_key, " with a change of",min_value,"%")
     elif min_value < 0:
-        st.write("The biggest negative change on the day goes to ",min_key," with a change of ", min_value,"%")
+        st.write("- The biggest negative change on the day goes to ",min_key," with a change of ", min_value,"%")
     else:
         st.write("No changes to report")
 
